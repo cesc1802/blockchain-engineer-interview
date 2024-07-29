@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
@@ -12,10 +12,10 @@ contract PostCovidStrokePrevention is ERC20, ERC20Burnable, Ownable {
     constructor() ERC20("Post-Covid Stroke Prevention", "PCSP") {
         _mint(msg.sender, 1000000000 * 10 ** decimals());
 
-        riskScoreToAward[1] = 15000 * 10 ** decimals();
-        riskScoreToAward[2] = 3000 * 10 ** decimals();
-        riskScoreToAward[3] = 225 * 10 ** decimals();
-        riskScoreToAward[4] = 30 * 10 ** decimals();
+        riskScoreToAward[1] = 15000 * 10 ** decimals(); // extremely high risk
+        riskScoreToAward[2] = 3000 * 10 ** decimals();  // high risk
+        riskScoreToAward[3] = 225 * 10 ** decimals();   // slightly high risk
+        riskScoreToAward[4] = 30 * 10 ** decimals();    // normal or low risk
     }
 
     function mint(address to, uint256 amount) public onlyOwner {
@@ -24,5 +24,8 @@ contract PostCovidStrokePrevention is ERC20, ERC20Burnable, Ownable {
 
     function reward(address to, uint256 riskScore) public onlyOwner {
         // TODO: Implement this method: Award PCSP to the user based on his/her risk score
+        require(riskScore < 5, "No reward for the risk score");
+        require(riskScore > 0, "No reward for the risk score");
+        mint(to, riskScoreToAward[riskScore]);
     }
 }
